@@ -1,7 +1,7 @@
 import React from "react";
 import { footerStyles as styles } from "../assets/dummystyles";
 import { Link } from "react-router-dom";
-import logo from "../assets/logoIcon.png";
+import logo from "../assets/logoicon.png";
 import { socialLinks, quickLinks } from "../assets/dummydata";
 import { ArrowRight, Icon, Mail, MapPin, Phone } from "lucide-react";
 
