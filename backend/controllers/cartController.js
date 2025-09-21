@@ -61,7 +61,7 @@ export async function getCart(req, res) {
       .findOne({ user: req.user._id })
       .populate({ path: "items.book", model: "Book" });
 
-    if (!cart || cart.items.lenght === 0) {
+    if (!cart || cart.items.length === 0) {
       return res.status(200).json({
         success: true,
         cart: {

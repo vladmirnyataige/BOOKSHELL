@@ -72,3 +72,7 @@ orderSchema.pre("validate", function (next) {
   }
   next();
 });
+
+const Order = mongoose.models.Order || mongoose.model("Order", orderSchema);
+
+export default Order;
