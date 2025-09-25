@@ -2,6 +2,7 @@ import React from "react";
 import Sidebar from "./components/Sidebar";
 import { Route, Routes } from "react-router-dom";
 import Addbook from "./components/Addbook";
+import ListBook from "./components/ListBook";
 
 const App = () => {
   return (
@@ -10,6 +11,7 @@ const App = () => {
       <main className="flex-1 overflow-auto">
         <Routes>
           <Route path="/" element={<Addbook />} />
+          <Route path="/list-books" element={<ListBook />} />
         </Routes>
       </main>
     </div>
