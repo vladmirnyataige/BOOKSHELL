@@ -25,21 +25,44 @@ const SignUp = () => {
     }
   }, [toast, navigate]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { username, email, password } = formData;
     if (!username.trim() || !email.trim() || !password.trim()) {
       setToast({
         visible: true,
-        message: "All Fields are Required",
+        message: "All field are required",
         type: "error",
       });
       return;
     }
-    setToast({ visible: true, message: "Creating account...", type: "info" });
-    setTimeout(() => {
-      setToast({ visible: true, message: "Account created", type: "success" });
-    }, 2000);
+    setToast({ visible: true, message: "Creating Account...", type: "info" });
+    const res = await fetch("http://localhost:4000/api/user/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, email, password }),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to register user");
+    }
+
+    setToast({
+      visible: true,
+      message: "Account created successfully!",
+      type: "success",
+    });
+
+    try {
+      setToast({
+        visible: true,
+        message: err.message || "Something went wrong",
+        type: "error",
+      });
+    } catch (err) {}
   };
 
   return (

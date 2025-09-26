@@ -313,7 +313,7 @@ const Orders = () => {
                       {new Date(order.placedAt).toLocaleDateString()}
                     </td>
                     <td className={`${styles.tableCell} ${styles.amountCell}`}>
-                      ₹{order.finalAmount.toFixed(2)}
+                      KES. {order.finalAmount.toFixed(2)}
                     </td>
                     <td className={styles.tableCell}>
                       <div
@@ -509,7 +509,7 @@ const Orders = () => {
               <div className={styles.modalSection}>
                 <h3 className={styles.sectionTitle}>
                   <CreditCard className={styles.sectionIcon} />
-                  Payement Information
+                  Payment Information
                 </h3>
                 <div className={styles.sectionContent}>
                   {[
