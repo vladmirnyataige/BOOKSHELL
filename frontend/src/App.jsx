@@ -10,6 +10,7 @@ import SignUp from "./components/SignUp";
 import Checkout from "./components/Checkout";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import MyOrders from "./components/MyOrders";
+import VerifyPayment from "./pages/VerifyPayment";
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
           </ProtectedRoute>
         }
       />
+      <Route path="/orders/verify" element={<VerifyPayment />} />
       <Route path="/orders" element={<MyOrders />} />
 
       <Route path="/login" element={<Login />} />
