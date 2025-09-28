@@ -81,7 +81,7 @@
 //     // ONLINE PAYEMENT
 
 //     if (normalizedPM === "Online Payment") {
-//       const session = await stripe.checkout.session.create({
+//       const session = await stripe.checkout.sessions.create({
 //         payment_method_types: ["card"],
 //         mode: "payment",
 //         line_items: items.map((o) => ({
@@ -94,7 +94,7 @@
 //         })),
 //         customer_email: customer.email,
 //         success_url: `${process.env.FRONTED_URL}/orders/verify?session_id={CHECKOUT_SESSION_ID}`,
-//         cancel_url: `${process.env.FRONTED_URL}/checkout?payment_status=cancel`,
+//         cancel_url: `${process.env.FRONTEND_URL}/checkout?payment_status=cancel`,
 //         metadata: { orderId },
 //       });
 
@@ -211,15 +211,17 @@
 // // GET ORDER BY ID
 // export const getOrderById = async (req, res, next) => {
 //   try {
-//     const order = await findById(req.params.id).lean();
+//     const order = await Order.findById(req.params.id).lean();
 
 //     if (!order) {
 //       return res.status(404).json({
 //         message: "Order not found.",
 //       });
 //     }
+
 //     res.json(order);
 //   } catch (err) {
+//     console.error("Error in getOrderById:", err);
 //     next(err);
 //   }
 // };
@@ -280,19 +282,18 @@
 import Order from "../models/orderModel.js";
 import Book from "../models/bookModel.js";
 import Stripe from "stripe";
+import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-// CREATE A ORDER
+// CREATE AN ORDER
 export const createOrder = async (req, res, next) => {
   try {
     const { customer, items, paymentMethod, notes, deliveryDate } = req.body;
 
     if (!Array.isArray(items) || items.length === 0) {
-      return res.status(400).json({
-        message: "Invalid or empty items array.",
-      });
+      return res.status(400).json({ message: "Invalid or empty items array." });
     }
 
     const normalizedPM = ["Cash on Delivery", "Online Payment"].includes(
@@ -301,7 +302,7 @@ export const createOrder = async (req, res, next) => {
       ? paymentMethod
       : "Online Payment";
 
-    const orderId = `ORD-${uuidv4()}`; //order ID unique
+    const orderId = `ORD-${uuidv4()}`; // unique order ID
 
     // Calculate amounts
     const totalAmount = items.reduce(
@@ -311,7 +312,7 @@ export const createOrder = async (req, res, next) => {
     const taxAmount = +(totalAmount * 0.05).toFixed(2);
     const shippingCharge = 0;
 
-    // 4. Map customer → shippingAddress
+    // Map customer → shippingAddress
     const shippingAddress = {
       fullName: customer.name,
       email: customer.email,
@@ -325,9 +326,8 @@ export const createOrder = async (req, res, next) => {
     const orderItems = await Promise.all(
       items.map(async (i) => {
         const bookDoc = await Book.findById(i.id).lean();
-
         if (!bookDoc) {
-          const err = new Error(`Book Not found: ${i.id}`);
+          const err = new Error(`Book not found: ${i.id}`);
           err.status = 400;
           throw err;
         }
@@ -356,7 +356,7 @@ export const createOrder = async (req, res, next) => {
       deliveryDate,
     };
 
-    // ONLINE PAYEMENT
+    // ONLINE PAYMENT
     if (normalizedPM === "Online Payment") {
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
@@ -370,8 +370,8 @@ export const createOrder = async (req, res, next) => {
           quantity: o.quantity,
         })),
         customer_email: customer.email,
-        success_url: `${process.env.FRONTED_URL}/orders/verify?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.FRONTED_URL}/checkout?payment_status=cancel`,
+        success_url: `${process.env.FRONTEND_URL}orders/verify?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.FRONTEND_URL}checkout?payment_status=cancel`,
         metadata: { orderId },
       });
 
@@ -382,17 +382,19 @@ export const createOrder = async (req, res, next) => {
         paymentIntentId: session.payment_intent,
       });
       await newOrder.save();
+
       return res.status(201).json({
         order: newOrder,
         checkoutUrl: session.url,
       });
     }
 
-    // COD
+    // CASH ON DELIVERY
     const newOrder = new Order({
       ...baseOrderData,
     });
     await newOrder.save();
+
     return res.status(201).json({
       order: newOrder,
       checkoutUrl: null,
@@ -402,29 +404,27 @@ export const createOrder = async (req, res, next) => {
   }
 };
 
-// CONFIRM STRIPE PAYEMENT
+// CONFIRM STRIPE PAYMENT
 export const confirmPayment = async (req, res, next) => {
   try {
     const { session_id } = req.query;
     if (!session_id) {
-      return res.status(400).json({ message: "sessionid required" });
+      return res.status(400).json({ message: "session_id required" });
     }
+
     const session = await stripe.checkout.sessions.retrieve(session_id);
     if (session.payment_status !== "paid") {
-      return res.status(400).json({
-        message: "Payment not completed",
-      });
+      return res.status(400).json({ message: "Payment not completed" });
     }
+
     const order = await Order.findOneAndUpdate(
       { sessionId: session_id },
-      {
-        paymentStatus: "Paid",
-      },
+      { paymentStatus: "Paid" },
       { new: true }
     );
 
     if (!order) {
-      return res.status(404).json({ message: "Order Not Found" });
+      return res.status(404).json({ message: "Order not found" });
     }
 
     res.json(order);
@@ -458,8 +458,10 @@ export const getOrders = async (req, res, next) => {
     const counts = orders.reduce(
       (acc, o) => {
         acc.totalOrders = (acc.totalOrders || 0) + 1;
-        const key = o.orderStatus || "Pending";
-        acc[key] = (acc[key] || 0) + 1;
+        const statusKey = o.orderStatus
+          ? o.orderStatus.toLowerCase()
+          : "pending";
+        acc[statusKey] = (acc[statusKey] || 0) + 1;
         if (o.paymentStatus === "Unpaid") {
           acc.pendingPayment = (acc.pendingPayment || 0) + 1;
         }
@@ -471,11 +473,11 @@ export const getOrders = async (req, res, next) => {
     res.json({
       counts: {
         totalOrders: counts.totalOrders,
-        pending: counts.Pending || 0,
-        processing: counts.Processing || 0,
-        shipped: counts.Shipped || 0,
-        delivered: counts.Delivered || 0,
-        cancelled: counts.Cancelled || 0,
+        pending: counts.pending || 0,
+        processing: counts.processing || 0,
+        shipped: counts.shipped || 0,
+        delivered: counts.delivered || 0,
+        cancelled: counts.cancelled || 0,
         pendingPayment: counts.pendingPayment,
       },
       orders,
@@ -488,13 +490,17 @@ export const getOrders = async (req, res, next) => {
 // GET ORDER BY ID
 export const getOrderById = async (req, res, next) => {
   try {
-    const order = await Order.findById(req.params.id).lean();
+    const { id } = req.params;
 
-    if (!order) {
-      return res.status(404).json({
-        message: "Order not found.",
-      });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid order ID" });
     }
+
+    const order = await Order.findById(id).lean();
+    if (!order) {
+      return res.status(404).json({ message: "Order not found." });
+    }
+
     res.json(order);
   } catch (err) {
     next(err);
@@ -511,7 +517,7 @@ export const getUserOrders = async (req, res) => {
     res.status(200).json({ orders });
   } catch (err) {
     console.error("Get user orders error:", err);
-    res.status(500).json({ error: "failed to fetch user orders " });
+    res.status(500).json({ error: "Failed to fetch user orders" });
   }
 };
 
@@ -523,15 +529,14 @@ export const updateOrder = async (req, res, next) => {
     allowed.forEach((field) => {
       if (req.body[field] !== undefined) updateData[field] = req.body[field];
     });
+
     const updated = await Order.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
       runValidators: true,
     }).lean();
 
     if (!updated) {
-      return res.status(404).json({
-        message: "Order not found",
-      });
+      return res.status(404).json({ message: "Order not found" });
     }
 
     res.json(updated);
@@ -540,7 +545,7 @@ export const updateOrder = async (req, res, next) => {
   }
 };
 
-// DELETE METHOD
+// DELETE ORDER
 export const deleteOrder = async (req, res, next) => {
   try {
     const deleted = await Order.findByIdAndDelete(req.params.id).lean();

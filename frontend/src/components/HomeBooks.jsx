@@ -1,18 +1,53 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { homeBooksStyles as styles } from "../assets/dummystyles";
 import { useCart } from "../CartContext/CartContext";
 import { hbbooks } from "../assets/dummydata";
 import { ArrowRight, Minus, Plus, ShoppingCart, Star } from "lucide-react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+
+const API_BASE = "http://localhost:4000";
 
 const HomeBooks = () => {
-  const { cart, dispatch } = useCart();
-  const inCart = (id) => cart?.items?.find((item) => item.id === id);
+  const { cart, addToCart, updateCartItem } = useCart();
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleAdd = (book) =>
-    dispatch({ type: "ADD_ITEM", payload: { ...book, quantity: 1 } });
-  const handleInc = (id) => dispatch({ type: "INCREMENT", payload: { id } });
-  const handleDec = (id) => dispatch({ type: "DECREMENT", payload: { id } });
+  const inCart = (id) => cart?.items.some((item) => item.id === id);
+  const getQty = (id) =>
+    cart?.items.find((item) => item.id === id)?.quantity || 0;
+
+  useEffect(() => {
+    const fetchBooks = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get(`${API_BASE}/api/book`);
+        const list = Array.isArray(res.data) ? res.data : res.data.books || [];
+        setBooks(list);
+      } catch (err) {
+        setError(err.message || "Failed to load Books ");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBooks();
+  }, []);
+  const handleAdd = (book) => {
+    addToCart({
+      id: book._id,
+      title: book.title,
+      price: book.price,
+      quantity: 1,
+    });
+  };
+
+  const handleInc = (id) => updateCartItem({ id, quantity: getQty(id) + 1 });
+  const handleDec = (id) => updateCartItem({ id, quantity: getQty(id) - 1 });
+
+  if (loading) return <div className={styles.loading}>Loading Books...</div>;
+  if (error) return <div className={styles.error}>{error}</div>;
+
   return (
     <div className={styles.section}>
       <div className={styles.container}>
@@ -22,13 +57,17 @@ const HomeBooks = () => {
             <div className={styles.headingLine} />
           </div>
           <div className={styles.grid}>
-            {hbbooks.map((book) => {
-              const item = inCart(book.id);
+            {books.map((book) => {
+              const itemInCart = inCart(book._id);
               return (
-                <div key={book.id} className={styles.bookCard}>
+                <div key={book._id} className={styles.bookCard}>
                   <div className={styles.imageWrapper}>
                     <img
-                      src={book.image}
+                      src={
+                        book.image?.startsWith("http")
+                          ? book.image
+                          : `${API_BASE}/${book.image}`
+                      }
                       alt={book.title}
                       className={styles.image}
                     />
@@ -37,7 +76,7 @@ const HomeBooks = () => {
                         <Star
                           key={i}
                           className={`h-4 w-4 ${
-                            i < book.rating
+                            i < Math.floor(book.rating || 0)
                               ? "text-[#43c6ac] fill-[#43c6ac]"
                               : "text-gray-300"
                           }`}
@@ -46,23 +85,22 @@ const HomeBooks = () => {
                     </div>
                   </div>
                   <h3 className={styles.title}>{book.title}</h3>
-                  <p className={styles.author}>
-                    {book.author} <br />
-                    Best author in this week
-                  </p>
-                  <span className={styles.actualPrice}>Ksh.{book.price}</span>
+                  <p className={styles.author}>{book.author}</p>
+                  <span className={styles.actualPrice}>
+                    Ksh.{book.price.toFixed(2)}
+                  </span>
 
-                  {item ? (
+                  {itemInCart ? (
                     <div className={styles.qtyBox}>
                       <button
-                        onClick={() => handleDec(book.id)}
+                        onClick={() => handleDec(book._id)}
                         className={styles.qtyBtn}
                       >
                         <Minus className="h-5 w-5" />
                       </button>
-                      <span className="text-gray-700">{item.quantity}</span>
+                      <span className="text-gray-700">{getQty(book._id)}</span>
                       <button
-                        onClick={() => handleInc(book.id)}
+                        onClick={() => handleInc(book._id)}
                         className={styles.qtyBtn}
                       >
                         <Plus className="h-5 w-5" />
