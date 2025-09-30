@@ -219,7 +219,7 @@ export const CartProvider = ({ children }) => {
     if (token) {
       try {
         const { data } = await axios.post(
-          "http://localhost:4000/api/cart/add",
+          "https://bookshell-6mg7.onrender.com/api/cart/add",
           { bookId: product.id, quantity: qty },
           { headers: { Authorization: `Bearer ${token}` } }
         );
