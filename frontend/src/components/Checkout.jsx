@@ -12,7 +12,7 @@ import {
 import { useCart } from "../CartContext/CartContext";
 import axios from "axios";
 
-const API_BASE = "https://bookshell-jade.vercel.app/api";
+const API_BASE = "https://bookshell-6mg7.onrender.com/api";
 const IMG_BASE = API_BASE.replace("/api", "/");
 
 const Checkout = () => {
