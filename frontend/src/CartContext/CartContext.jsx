@@ -255,7 +255,7 @@ export const CartProvider = ({ children }) => {
     if (token) {
       try {
         await axios.put(
-          "http://localhost:4000/api/cart/update",
+          "https://bookshell-6mg7.onrender.com/api/cart/update",
           { bookId: id, quantity },
           { headers: { Authorization: `Bearer ${token}` } }
         );
