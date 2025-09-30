@@ -368,7 +368,7 @@ import { booksPageStyles as styles } from "../assets/dummystyles";
 import { useCart } from "../CartContext/CartContext";
 import axios from "axios";
 
-const API_BASE = "http://localhost:4000";
+const API_BASE = "https://bookshell-6mg7.onrender.com";
 
 const Books = () => {
   const { cart, addToCart, updateCartItem } = useCart();
