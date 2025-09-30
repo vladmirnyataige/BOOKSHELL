@@ -24,27 +24,64 @@ const Login = () => {
       return () => clearTimeout(timer);
     }
   }, [toast]);
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const { email, password } = formData;
+  //   if (!email.trim() || !password()) {
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.email || !formData.password) {
+    const { email, password } = formData;
+
+    // validation
+    if (!email.trim() || !password.trim()) {
       setToast({
         visible: true,
-        message: "All fields are required",
+        message: "All fields are required.",
         type: "error",
       });
       return;
     }
+
     setIsSubmitting(true);
+
     try {
-      localStorage.setItem("authToken", "demo-token");
-      setToast({ visible: true, message: "login successful", type: "success" });
-      setTimeout(() => navigate("/"), 2000);
-    } catch {
-      setToast({ visible: true, message: "Login failed", type: "error" });
+      const res = await fetch("http://localhost:4000/api/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Invalid Credentials");
+      }
+
+      // SAVE TOKEN
+      localStorage.setItem("authToken", data.token);
+
+      setToast({
+        visible: true,
+        message: "Login successful!",
+        type: "success",
+      });
+
+      setTimeout(() => navigate("/"), 1000);
+    } catch (err) {
+      setToast({
+        visible: true,
+        message: err.message || "Something went wrong",
+        type: "error",
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
+
   const handleSignOut = () => {
     localStorage.removeItem("authToken");
     setToast({

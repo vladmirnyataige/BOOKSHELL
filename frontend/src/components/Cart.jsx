@@ -192,48 +192,71 @@ import {
   Phone,
   Plus,
   ShoppingBag,
-  Trash,
+  Trash2,
 } from "lucide-react";
 import { useCart } from "../CartContext/CartContext";
-import { Link } from "react-router-dom";
+import { data, Link } from "react-router-dom";
 import { styles } from "../assets/dummystyles";
 import jsPDF from "jspdf";
+import axios from "axios";
+
+const API_BASE = "http://localhost:4000/api";
+const IMG_BASE = API_BASE.replace("/api", "/");
 
 const Cart = () => {
-  const { cart, dispatch } = useCart();
+  const { cart, updateCartItem, removeFromCart } = useCart();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [images, setImages] = useState([]);
 
   const total = cart.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
-
-  const getImageSource = (item) => {
-    if (typeof item.image === "string") return item.image;
-    return item.image?.default;
+    axios
+      .get(`${API_BASE}/book`)
+      .then(({ data }) => {
+        const map = {};
+        data.forEach((book) => {
+          map[book._id] = book.image;
+        });
+        console.log("images keys map:", Object.keys(map));
+        setImages(map);
+      })
+      .catch((err) => console.error("Failed to load books:", err));
+  }, []);
+  const getImageSrc = (item) => {
+    const relPath = images[item.id];
+    if (relPath) {
+      return `${IMG_BASE}${relPath}`;
+    }
   };
 
   // INCREASING, DECREASING, REMOVE
   const inc = (item) =>
-    dispatch({
-      type: "INCREMENT",
-      payload: { id: item.id, source: item.source },
+    updateCartItem({
+      id: item.id,
+      source: item.source,
+      quantity: item.quantity + 1,
     });
 
-  const dec = (item) =>
-    dispatch({
-      type: "DECREMENT",
-      payload: { id: item.id, source: item.source },
-    });
+  const dec = (item) => {
+    const newQty = item.quantity - 1;
+    if (newQty > 0) {
+      updateCartItem({
+        id: item.id,
+        source: item.source,
+        quantity: newQty,
+      });
+    } else {
+      removeFromCart({
+        id: item.id,
+        source: item.source,
+      });
+    }
+  };
 
-  const remove = (item) =>
-    dispatch({
-      type: "REMOVE_ITEM",
-      payload: { id: item.id, source: item.source },
-    });
+  const remove = (item) => removeFromCart({ id: item.id, source: item.source });
 
   // WHATSAPP CHECKOUT
   const handleCheckout = () => {
@@ -362,7 +385,7 @@ const Cart = () => {
                 >
                   <div className={styles.cartItemContent}>
                     <img
-                      src={getImageSource(item)}
+                      src={getImageSrc(item)}
                       alt={item.title}
                       className={styles.cartItemImage}
                     />
@@ -376,7 +399,7 @@ const Cart = () => {
                           onClick={() => remove(item)}
                           className={styles.removeBtn}
                         >
-                          <Trash className={styles.removeIcon} />
+                          <Trash2 className={styles.removeIcon} />
                         </button>
                       </div>
 
@@ -501,6 +524,10 @@ const Cart = () => {
                   Checkout via WhatsApp
                   <ArrowRight className={styles.checkoutIcon} />
                 </button>
+                <Link to="/checkout" className={styles.checkoutBtn}>
+                  Checkout
+                  <ArrowRight className={styles.checkoutIcon} />
+                </Link>
                 <button onClick={downloadPDF} className={styles.continueBtn}>
                   Download Invoice of Order
                   <BookOpen className={styles.continueIcon} />
