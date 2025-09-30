@@ -3,7 +3,7 @@ import { styles } from "../assets/dummyStyles";
 import { BookOpen, Filter, Trash2 } from "lucide-react";
 import axios from "axios";
 
-const API_BASE = "https://bookshell-6mg7.onrender.com";
+const API_BASE = "https://admin-bookshell.vercel.app";
 const ListBook = () => {
   const [books, setBooks] = useState([]);
   const [filterCategory, setFilterCategory] = useState("All");
