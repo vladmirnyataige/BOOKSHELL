@@ -12,7 +12,7 @@ import {
 import { useCart } from "../CartContext/CartContext";
 import axios from "axios";
 
-const API_BASE = "http://localhost:4000/api";
+const API_BASE = "https://bookshell-jade.vercel.app/api";
 const IMG_BASE = API_BASE.replace("/api", "/");
 
 const Checkout = () => {
