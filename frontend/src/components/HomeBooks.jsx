@@ -6,7 +6,7 @@ import { ArrowRight, Minus, Plus, ShoppingCart, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-const API_BASE = "http://localhost:4000";
+const API_BASE = "https://bookshell-6mg7.onrender.com";
 
 const HomeBooks = () => {
   const { cart, addToCart, updateCartItem } = useCart();
