@@ -37,7 +37,7 @@ const SignUp = () => {
       return;
     }
     setToast({ visible: true, message: "Creating Account...", type: "info" });
-    const res = await fetch("http://localhost:4000/api/user/register", {
+    const res = await fetch("https://bookshell-6mg7.onrender.com/api/user/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
