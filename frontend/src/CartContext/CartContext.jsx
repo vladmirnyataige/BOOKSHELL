@@ -183,7 +183,7 @@ export const CartProvider = ({ children }) => {
       const token = localStorage.getItem("authToken");
       if (!token) return;
       try {
-        const { data } = await axios.get("http://localhost:4000/api/cart", {
+        const { data } = await axios.get("https://bookshell-6mg7.onrender.com/api/cart", {
           headers: { Authorization: `Bearer ${token}` },
         });
         // flatten each { book, quantity } into { id, title, price, author, quantity }
@@ -276,7 +276,7 @@ export const CartProvider = ({ children }) => {
     const token = localStorage.getItem("authToken");
     if (token) {
       try {
-        await axios.delete(`http://localhost:4000/api/cart/remove/${id}`, {
+        await axios.delete(`https://bookshell-6mg7.onrender.com/api/cart/remove/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         dispatch({ type: "REMOVE_ITEM", payload: { id, source } });
@@ -293,7 +293,7 @@ export const CartProvider = ({ children }) => {
     const token = localStorage.getItem("authToken");
     if (token) {
       try {
-        await axios.delete("http://localhost:4000/api/cart/clear", {
+        await axios.delete("https://bookshell-6mg7.onrender.com/api/cart/clear", {
           headers: { Authorization: `Bearer ${token}` },
         });
       } catch (err) {
