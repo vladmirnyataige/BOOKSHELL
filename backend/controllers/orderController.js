@@ -370,8 +370,8 @@ export const createOrder = async (req, res, next) => {
           quantity: o.quantity,
         })),
         customer_email: customer.email,
-        success_url: `${process.env.FRONTEND_URL}orders/verify?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.FRONTEND_URL}checkout?payment_status=cancel`,
+        success_url: `${process.env.FRONTEND_URL}/orders/verify?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.FRONTEND_URL}/checkout?payment_status=cancel`,
         metadata: { orderId },
       });
 
