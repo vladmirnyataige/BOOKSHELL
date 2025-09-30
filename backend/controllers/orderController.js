@@ -405,14 +405,47 @@ export const createOrder = async (req, res, next) => {
 };
 
 // CONFIRM STRIPE PAYMENT
+// export const confirmPayment = async (req, res, next) => {
+//   try {
+//     const { session_id } = req.query;
+//     if (!session_id) {
+//       return res.status(400).json({ message: "session_id required" });
+//     }
+
+//     const session = await stripe.checkout.sessions.retrieve(session_id);
+//     if (session.payment_status !== "paid") {
+//       return res.status(400).json({ message: "Payment not completed" });
+//     }
+
+//     const order = await Order.findOneAndUpdate(
+//       { sessionId: session_id },
+//       { paymentStatus: "Paid" },
+//       { new: true }
+//     );
+
+//     if (!order) {
+//       return res.status(404).json({ message: "Order not found" });
+//     }
+
+//     res.json(order);
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 export const confirmPayment = async (req, res, next) => {
   try {
     const { session_id } = req.query;
-    if (!session_id) {
-      return res.status(400).json({ message: "session_id required" });
+
+    if (!session_id || typeof session_id !== "string") {
+      return res.status(400).json({ message: "session_id is required" });
     }
 
     const session = await stripe.checkout.sessions.retrieve(session_id);
+
+    if (!session) {
+      return res.status(404).json({ message: "Stripe session not found" });
+    }
+
     if (session.payment_status !== "paid") {
       return res.status(400).json({ message: "Payment not completed" });
     }
@@ -427,8 +460,12 @@ export const confirmPayment = async (req, res, next) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    res.json(order);
+    return res.status(200).json({
+      message: "Payment confirmed",
+      order,
+    });
   } catch (err) {
+    console.error("Confirm payment error:", err);
     next(err);
   }
 };
