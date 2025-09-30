@@ -274,7 +274,7 @@ const categories = [
   "Self-Help",
   "Thriller",
 ];
-const API_BASE = "https://admin-bookshell.vercel.app"; // ✅ removed trailing slash
+const API_BASE = "https://bookshell-6mg7.onrender.com"; // ✅ removed trailing slash
 
 const Addbook = () => {
   const [formData, setformData] = useState(initialFormData);
