@@ -32,7 +32,7 @@ const __dirname = path.dirname(__filename);
 app.use(
   cors({
     origin: (origin, callback) => {
-      const allowedOrigins = ["http://localhost:5173", "http://localhost:5174", "https://bookshell-jade.vercel.app/"];
+      const allowedOrigins = ["http://localhost:5173", "http://localhost:5174", "https://bookshell-jade.vercel.app"];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
