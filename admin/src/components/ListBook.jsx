@@ -162,7 +162,7 @@ const ListBook = () => {
                     <div className="flex items-center">
                       {book.image && (
                         <img
-                          src={`http://localhost:4000/${book.image}`}
+                          src={`https://bookshell-6mg7.onrender.com/${book.image}`}
                           alt={book.title}
                           className="h-20 w-15 object-cover rounded"
                         />
