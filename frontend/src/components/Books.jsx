@@ -432,7 +432,7 @@ const Books = () => {
         filterCategory === "all" || book.category === filterCategory;
       const lowerSearch = searchTerm.toLowerCase();
       const matchSearch =
-        searchTerm ||
+        !searchTerm ||
         book.title.toLowerCase().includes(lowerSearch) ||
         book.author.toLowerCase().includes(lowerSearch);
       return matchCategory && matchSearch;
