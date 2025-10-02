@@ -2,8 +2,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import { styles } from "../assets/dummyStyles";
 import { BookOpen, Filter, Trash2 } from "lucide-react";
 import axios from "axios";
+import AdminHeader from "./AdminHeader";
 
-const API_BASE = "https://bookshell-6mg7.onrender.com";
+const API_BASE = "http://localhost:4000";
 const ListBook = () => {
   const [books, setBooks] = useState([]);
   const [filterCategory, setFilterCategory] = useState("All");
@@ -95,6 +96,7 @@ const ListBook = () => {
   };
   return (
     <div className={styles.listBooksPage}>
+      <AdminHeader />
       <div className={styles.listBooksHeader}>
         <h1 className={styles.listBooksTitle}>Manage Books Inventory</h1>
         <p className={styles.listBooksSubtitle}>
@@ -161,8 +163,13 @@ const ListBook = () => {
                   <td className={styles.tableCell}>
                     <div className="flex items-center">
                       {book.image && (
+                        // <img
+                        //   src={`https://bookshell-6mg7.onrender.com/${book.image}`}
+                        //   alt={book.title}
+                        //   className="h-20 w-15 object-cover rounded"
+                        // />
                         <img
-                          src={`https://bookshell-6mg7.onrender.com/${book.image}`}
+                          src={book.image}
                           alt={book.title}
                           className="h-20 w-15 object-cover rounded"
                         />

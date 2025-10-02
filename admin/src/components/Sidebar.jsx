@@ -8,6 +8,7 @@ import {
   ChevronRight,
   Icon,
   ShoppingCart,
+  Users,
 } from "lucide-react";
 import logo from "../assets/logoicon.png";
 
@@ -31,11 +32,17 @@ const Sidebar = () => {
     { path: "/", icon: BookPlus, label: "Add Books" },
     { path: "/list-books", icon: BookOpen, label: "List Books" },
     { path: "/orders", icon: ShoppingCart, label: "Orders" },
+    { path: "/users", icon: Users, label: "Users" },
   ];
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
+
+  const isLoggedIn = !!localStorage.getItem("AdminToken");
+  if (!isLoggedIn) {
+    return null; // ⛔ don't render sidebar
+  }
 
   //MOBILE VIEW NAVIGATION
   if (isMobile) {

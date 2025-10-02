@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { ArrowRight, Eye, EyeOff, Lock, Mail } from "lucide-react";
 
+const API_BASE = "http://localhost:4000";
+
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -47,7 +49,7 @@ const Login = () => {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch("https://bookshell-6mg7.onrender.com/api/user/login", {
+      const res = await fetch(`${API_BASE}/api/user/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

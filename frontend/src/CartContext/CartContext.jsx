@@ -1,100 +1,7 @@
-// import { createContext, useContext, useEffect, useReducer } from "react";
-
-// const CartContext = createContext();
-
-// const loadInitialState = () => {
-//   if (typeof window !== "undefined") {
-//     const saved = localStorage.getItem("cart");
-//     try {
-//       const parsed = saved ? JSON.parse(saved) : null;
-//       if (parsed && Array.isArray(parsed.items)) return parsed;
-//       return { items: [] };
-//     } catch {
-//       return { items: [] };
-//     }
-//   }
-//   return { items: [] };
-// };
-// const cartReducer = (state, action) => {
-//   switch (action.type) {
-//     case "ADD_ITEM":
-//       const itemToAdd = {
-//         ...action.payload,
-//         quantity: action.payload.quantity || 1,
-//       };
-//       const exists = state.items.find(
-//         (i) =>
-//           i.id === itemToAdd.id &&
-//           (i.source === itemToAdd.source || (!i.source && !itemToAdd.source))
-//       );
-//       if (exists) {
-//         return {
-//           ...state,
-//           items: state.items.map((i) =>
-//             (i.id === itemToAdd.id && i.source === itemToAdd.source) ||
-//             (!i.source && !itemToAdd.source)
-//               ? { ...i, quantity: i.quantity + itemToAdd.quantity }
-//               : i
-//           ),
-//         };
-//       }
-//       return { ...state, items: [...state.items, itemToAdd] };
-
-//     case "INCREMENT":
-//       return {
-//         ...state,
-//         items: state.items.map((i) =>
-//           i.id === action.payload.id &&
-//           (i.source === action.payload.source ||
-//             !i.source === !action.payload.source)
-//             ? { ...i, quantity: i.quantity + 1 }
-//             : i
-//         ),
-//       };
-//     case "DECREMENT":
-//       return {
-//         ...state,
-//         items: state.items
-//           .map((i) =>
-//             i.id === action.payload.id &&
-//             (i.source === action.payload.source ||
-//               !i.source === !action.payload.source)
-//               ? { ...i, quantity: i.quantity - 1 }
-//               : i
-//           )
-//           .filter((i) => i.quantity > 0),
-//       };
-//     case "REMOVE_ITEM":
-//       return {
-//         ...state,
-//         items: state.items.filter(
-//           (i) =>
-//             !(
-//               i.id === action.payload.id &&
-//               (i.source === action.payload.source ||
-//                 (!i.source && !action.payload.source))
-//             )
-//         ),
-//       };
-//     default:
-//       return state;
-//   }
-// };
-
-// export const CartProvider = ({ children }) => {
-//   const [state, dispatch] = useReducer(cartReducer, {}, loadInitialState);
-//   useEffect(() => {
-//     localStorage.setItem("cart", JSON.stringify(state));
-//   }, [state]);
-//   return (
-//     <CartContext.Provider value={{ cart: state, dispatch }}>
-//       {children}
-//     </CartContext.Provider>
-//   );
-// };
-// export const useCart = () => useContext(CartContext);
 import { createContext, useReducer, useContext, useEffect } from "react";
 import axios from "axios";
+
+const API_BASE = "http://localhost:4000";
 
 const CartContext = createContext();
 
@@ -183,7 +90,7 @@ export const CartProvider = ({ children }) => {
       const token = localStorage.getItem("authToken");
       if (!token) return;
       try {
-        const { data } = await axios.get("https://bookshell-6mg7.onrender.com/api/cart", {
+        const { data } = await axios.get(`${API_BASE}/api/cart`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         // flatten each { book, quantity } into { id, title, price, author, quantity }
@@ -219,7 +126,7 @@ export const CartProvider = ({ children }) => {
     if (token) {
       try {
         const { data } = await axios.post(
-          "https://bookshell-6mg7.onrender.com/api/cart/add",
+          `${API_BASE}/api/cart/add`,
           { bookId: product.id, quantity: qty },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -255,7 +162,7 @@ export const CartProvider = ({ children }) => {
     if (token) {
       try {
         await axios.put(
-          "https://bookshell-6mg7.onrender.com/api/cart/update",
+          `${API_BASE}/api/cart/update`,
           { bookId: id, quantity },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -276,7 +183,7 @@ export const CartProvider = ({ children }) => {
     const token = localStorage.getItem("authToken");
     if (token) {
       try {
-        await axios.delete(`https://bookshell-6mg7.onrender.com/api/cart/remove/${id}`, {
+        await axios.delete(`${API_BASE}/api/cart/remove/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         dispatch({ type: "REMOVE_ITEM", payload: { id, source } });
@@ -293,7 +200,7 @@ export const CartProvider = ({ children }) => {
     const token = localStorage.getItem("authToken");
     if (token) {
       try {
-        await axios.delete("https://bookshell-6mg7.onrender.com/api/cart/clear", {
+        await axios.delete(`${API_BASE}/api/cart/clear`, {
           headers: { Authorization: `Bearer ${token}` },
         });
       } catch (err) {
