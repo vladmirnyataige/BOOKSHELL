@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { styles } from "../assets/dummyStyles";
 import { BookOpen, Filter, Trash2 } from "lucide-react";
 import axios from "axios";
+import AdminHeader from "./AdminHeader";
 
 const API_BASE = "http://localhost:4000";
 const ListBook = () => {
@@ -95,6 +96,7 @@ const ListBook = () => {
   };
   return (
     <div className={styles.listBooksPage}>
+      <AdminHeader />
       <div className={styles.listBooksHeader}>
         <h1 className={styles.listBooksTitle}>Manage Books Inventory</h1>
         <p className={styles.listBooksSubtitle}>

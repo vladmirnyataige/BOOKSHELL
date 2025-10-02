@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { styles } from "../assets/dummyStyles";
 import axios from "axios";
 import { BookPlus, Star } from "lucide-react";
+import AdminHeader from "./AdminHeader";
 
 const initialFormData = {
   title: "",
@@ -80,6 +81,7 @@ const Addbook = () => {
 
   return (
     <div className={styles.addBooksPage}>
+      <AdminHeader />
       <div className={styles.addBooksContainer}>
         {/* Header */}
         <div className={styles.headerContainer}>

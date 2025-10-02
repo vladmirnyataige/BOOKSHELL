@@ -1,58 +1,6 @@
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-
-// const API_BASE = "http://localhost:4000"; // change to your deployed API
-
-// const UsersPage = () => {
-//   const [users, setUsers] = useState([]);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const fetchUsers = async () => {
-//       try {
-//         const res = await axios.get(`${API_BASE}/api/admin/users`);
-//         setUsers(res.data);
-//       } catch (err) {
-//         console.error("Error fetching users", err);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-//     fetchUsers();
-//   }, []);
-
-//   if (loading) return <p>Loading users...</p>;
-
-//   return (
-//     <div className="p-6">
-//       <h1 className="text-2xl font-semibold mb-4">Registered Users</h1>
-//       <table className="w-full border">
-//         <thead>
-//           <tr className="bg-gray-200">
-//             <th className="p-2 border">Name</th>
-//             <th className="p-2 border">Email</th>
-//             <th className="p-2 border">Date Joined</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {users.map((u) => (
-//             <tr key={u._id}>
-//               <td className="p-2 border">{u.name}</td>
-//               <td className="p-2 border">{u.email}</td>
-//               <td className="p-2 border">
-//                 {new Date(u.createdAt).toLocaleDateString()}
-//               </td>
-//             </tr>
-//           ))}
-//         </tbody>
-//       </table>
-//     </div>
-//   );
-// };
-
-// export default UsersPage;
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import AdminHeader from "./AdminHeader";
 
 const API_BASE = "http://localhost:4000"; // change to your deployed API
 
@@ -84,6 +32,7 @@ const UsersPage = () => {
 
   return (
     <div className="p-6">
+      <AdminHeader />
       <h1 className="text-2xl font-semibold mb-6">Registered Users</h1>
 
       <div

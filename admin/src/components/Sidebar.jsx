@@ -39,6 +39,11 @@ const Sidebar = () => {
     setIsCollapsed(!isCollapsed);
   };
 
+  const isLoggedIn = !!localStorage.getItem("AdminToken");
+  if (!isLoggedIn) {
+    return null; // ⛔ don't render sidebar
+  }
+
   //MOBILE VIEW NAVIGATION
   if (isMobile) {
     return (

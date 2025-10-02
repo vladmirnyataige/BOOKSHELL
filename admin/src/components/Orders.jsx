@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 
 import axios from "axios";
+import AdminHeader from "./AdminHeader";
 
 const API_BASE = "https://bookshell-6mg7.onrender.com";
 
@@ -210,6 +211,7 @@ const Orders = () => {
   ];
   return (
     <div className={styles.pageBackground}>
+      <AdminHeader />
       <div className={styles.container}>
         <div className="mb-8">
           <h1 className={styles.headerTitle}>Order Management</h1>
