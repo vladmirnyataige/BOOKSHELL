@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AdminHeader from "./AdminHeader";
 
-const API_BASE = "http://localhost:4000"; // change to your deployed API
+const API_BASE = "https://bookshell-6mg7.onrender.com"; // change to your deployed API
 
 const UsersPage = () => {
   const [users, setUsers] = useState([]);
