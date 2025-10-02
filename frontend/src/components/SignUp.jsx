@@ -3,6 +3,8 @@ import { Signup } from "../assets/dummystyles";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 
+const API_BASE = "http://localhost:4000";
+
 const SignUp = () => {
   const [formData, setFormData] = useState({
     username: "",
@@ -37,7 +39,7 @@ const SignUp = () => {
       return;
     }
     setToast({ visible: true, message: "Creating Account...", type: "info" });
-    const res = await fetch("https://bookshell-6mg7.onrender.com/api/user/register", {
+    const res = await fetch(`${API_BASE}/api/user/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
