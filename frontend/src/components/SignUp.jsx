@@ -3,7 +3,7 @@ import { Signup } from "../assets/dummystyles";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 
-const API_BASE = "http://localhost:4000";
+const API_BASE = "https://bookshell-6mg7.onrender.com";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
