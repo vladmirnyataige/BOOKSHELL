@@ -2,6 +2,7 @@ import userModel from "../models/userModel.js";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import User from "../models/userModel.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret_here";
 const TOKEN_EXPIRES = "24h";
@@ -114,3 +115,14 @@ export async function loginUser(req, res) {
     });
   }
 }
+
+// GET all users
+export const getUsers = async (req, res) => {
+  try {
+    const users = await User.find().sort({ createdAt: -1 }); // newest first
+    res.json(users);
+  } catch (err) {
+    console.error("Error fetching users:", err);
+    res.status(500).json({ message: "Failed to fetch users" });
+  }
+};

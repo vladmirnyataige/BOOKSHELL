@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import Addbook from "./components/Addbook";
 import ListBook from "./components/ListBook";
 import Orders from "./components/Orders";
+import UsersPage from "./components/UsersPage";
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
           <Route path="/" element={<Addbook />} />
           <Route path="/list-books" element={<ListBook />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="/users" element={<UsersPage />} />
         </Routes>
       </main>
     </div>
