@@ -13,7 +13,7 @@ import { useCart } from "../CartContext/CartContext";
 import axios from "axios";
 import { getImageUrl } from "../../utils/getImageUrl";
 
-const API_BASE = "https://bookshell-6mg7.onrender.com/api";
+const API_BASE = "http://localhost:4000";
 const IMG_BASE = API_BASE.replace("/api", "/");
 
 const Checkout = () => {
@@ -39,7 +39,7 @@ const Checkout = () => {
   //   FETCH IMAGES
   useEffect(() => {
     axios
-      .get(`${`${API_BASE}/book`}`)
+      .get(`${`${API_BASE}/api/book`}`)
       .then(({ data }) => {
         const books = Array.isArray(data) ? data : data.books || [];
         const map = {};
@@ -103,12 +103,12 @@ const Checkout = () => {
       };
       console.log("ORDER PAYLOAD >>>", payload);
 
-      const { data } = await axios.post(`${API_BASE}/order`, payload, {
+      const { data } = await axios.post(`${API_BASE}/api/order`, payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       setOrderTotal(total);
-      await axios.delete(`${API_BASE}/cart/clear`, {
+      await axios.delete(`${API_BASE}/api/cart/clear`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       clearCart();
