@@ -13,7 +13,7 @@ import { useCart } from "../CartContext/CartContext";
 import axios from "axios";
 import { getImageUrl } from "../../utils/getImageUrl";
 
-const API_BASE = "http://localhost:4000";
+const API_BASE = "https://bookshell-6mg7.onrender.com";
 const IMG_BASE = API_BASE.replace("/api", "/");
 
 const Checkout = () => {
