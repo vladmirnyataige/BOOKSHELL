@@ -12,7 +12,7 @@ import { bgColors, obsbooks } from "../assets/dummydata";
 import { useCart } from "../CartContext/CartContext";
 import axios from "axios";
 
-const API_BASE = "http://localhost:4000";
+const API_BASE = "https://bookshell-6mg7.onrender.com";
 
 const OurBestSellers = () => {
   const scrollRef = useRef(null);
