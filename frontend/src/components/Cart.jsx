@@ -17,7 +17,7 @@ import { styles } from "../assets/dummystyles";
 import jsPDF from "jspdf";
 import axios from "axios";
 
-const API_BASE = "http://localhost:4000/api";
+const API_BASE = "https://bookshell-6mg7.onrender.com/api";
 const IMG_BASE = API_BASE.replace("/api", "/");
 
 const Cart = () => {
