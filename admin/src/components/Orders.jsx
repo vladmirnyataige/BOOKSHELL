@@ -455,7 +455,7 @@ const Orders = () => {
                       className="flex items-center justify-between mb-4"
                     >
                       <img
-                        src={`${API_BASE}/${bk.image}`}
+                        src={bk.image}
                         alt={bk.title}
                         className="w-16 h-20 object-cover rounded"
                       />

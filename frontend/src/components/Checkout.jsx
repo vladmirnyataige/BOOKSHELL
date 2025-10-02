@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useCart } from "../CartContext/CartContext";
 import axios from "axios";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const API_BASE = "https://bookshell-6mg7.onrender.com/api";
 const IMG_BASE = API_BASE.replace("/api", "/");
@@ -365,14 +366,11 @@ const Checkout = () => {
                     cart.items.map((item) => (
                       <div key={item.id} className="flex items-center">
                         <img
-                          src={
-                            images[item.id]
-                              ? `${IMG_BASE}${images[item.id]}`
-                              : "/placeholder.png"
-                          }
+                          src={getImageUrl(images[item.id])}
                           alt={item.title}
                           className="w-16 h-16 object-cover rounded-xl mr-4"
                         />
+
                         <div className="flex-1">
                           <h4 className="font-medium text-gray-900">
                             {item.title}
