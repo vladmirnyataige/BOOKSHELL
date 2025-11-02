@@ -224,10 +224,14 @@ export const homeBooksStyles = {
     "h-1 w-20 bg-gradient-to-r from-[#43C6AC] to-[#F8FFAE] rounded-full mx-auto",
   grid: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8",
   bookCard: "group relative",
+  // imageWrapper:
+  //   "relative h-72 overflow-hidden rounded-xl border-4 border-[#43C6AC]/20 mb-4",
+  // image:
+  //   "w-full h-full object-cover transition-transform duration-500 group-hover:scale-105",
   imageWrapper:
-    "relative h-72 overflow-hidden rounded-xl border-4 border-[#43C6AC]/20 mb-4",
+    "relative h-72 flex items-center justify-center overflow-hidden rounded-xl border-4 border-[#43C6AC]/20 mb-4 bg-gray-50",
   image:
-    "w-full h-full object-cover transition-transform duration-500 group-hover:scale-105",
+    "max-w-full max-h-full object-contain transition-transform duration-500",
   rating:
     "absolute top-2 right-2 bg-white/90 px-3 py-1 rounded-full flex items-center",
   title: "text-xl font-bold text-gray-900 mb-2",
